@@ -5,8 +5,8 @@
 Create a branch named Part2
 
  References
- 
- 
+
+
  1) convert the pointer usage (except for 'const char*') to reference types or 
     const reference types **>>> WHERE POSSIBLE <<<**
     Not every pointer can be converted.
@@ -19,9 +19,9 @@ Create a branch named Part2
  2) revise the 'else' statement in main() that handles when `smaller` is a nullptr. 
  there is only one reason for `compare` to return nullptr. 
  Update this std::cout expression to specify why nullptr was returned.
- 
+
  3) After you finish, click the [run] button.  Clear up any errors or warnings as best you can.
- 
+
  */
 
 
@@ -29,19 +29,19 @@ Create a branch named Part2
 #include <string>
 struct T
 {
-    T(int v, const char* n);   //1
+    T(int v, const char* n);   
     int value;
     std::string name;
 };
 
 T::T(int v, const char* n) : value(v), name(n) {}
 
-struct F                                //4
+struct F                                
 {
-    T* compare(T* a, T* b) //5
+    T* compare(T& a, T& b) 
     {
-        if( a->value < b->value ) return a;
-        if( a->value > b->value ) return b;
+        if( a.value < b.value ) return &a;
+        if( a.value > b.value ) return &b;
         return nullptr;
     }
 };
@@ -50,9 +50,9 @@ struct U
 {
     float origin { 0 }, destination { 0 };
 
-    float updateDestinationValue(float* updatedValue)      //12
+    float updateDestinationValue(float* updatedValue)     
     {
-        if (updatedValue == nullptr) //13
+        if (updatedValue == nullptr) 
         {
             std::cout << "Warning! The parameter to this function is a null pointer, so the result is defaulting to 0.f now.\n";
             return 0.f;
@@ -76,15 +76,15 @@ struct U
 
 struct V
 {
-    static float staticUpdateDestinationValue(U* that, float* updatedValue )        //10
+    static float staticUpdateDestinationValue(U* that, float* updatedValue )        
     {
 
-        if (that == nullptr) //13
+        if (that == nullptr) 
         {
             std::cout << "Warning! The first parameter is a null pointer, so the result is defaulting to 0.f now.\n";
             return 0.f;
         }
-        if (updatedValue == nullptr) //13
+        if (updatedValue == nullptr) 
         {
             std::cout << "Warning! The second parameter is a null pointer, so the result is defaulting to 0.f now.\n";
             return 0.f;
@@ -122,29 +122,24 @@ struct V
 
 int main()
 {
-    T t33(33, "t33");                                             //6
-    T t13(13, "t13");                                             //6
+    T t33(33, "t33");                                             
+    T t13(13, "t13");                                             
 
-    F f;                                            //7
-    auto* smaller = f.compare(&t33, &t13);                              //8
+    F f;                                            
+    auto* smaller = f.compare(t33, t13);                              
 
     if (smaller == nullptr)
     {
-        std:: cout << "Here are some reasons why `f.compare()` might return nullptr: \n"
-                   << "\tReason 1A: The `value` member variable of both arguments is exactly the same, OR\n"
-                   << "\tReason 1B: passing the same pointer twice as arguments\n"
-                   << "\tReason 2 : One or both arguments are null pointers.\n"
-                   << "\tReason 3 : An instance of T's `value` member variable was not properly initialized and was filled with a garbage.\n"
-                   << "\n";
+        std::cout << "f.compare() returned nullptr because The `value` member variable of both arguments is exactly the same.\n\n";
     }
     else 
     {
-        std::cout << "the smaller one is << " << smaller->name << std::endl; //9
+        std::cout << "the smaller one is << " << smaller->name << std::endl; 
     }
 
     U u1;
     float updatedValue = 5.f;
-    std::cout << "[static func] u1's multiplied values: " << V::staticUpdateDestinationValue(&u1, &updatedValue) << std::endl;                  //11
+    std::cout << "[static func] u1's multiplied values: " << V::staticUpdateDestinationValue(&u1, &updatedValue) << std::endl;                  
 
     U u2;
     std::cout << "[member func] u2's multiplied values: " << u2.updateDestinationValue(&updatedValue) << std::endl;
